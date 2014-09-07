@@ -23,3 +23,30 @@ submit <- data.frame(PassengerId = test$PassengerId, Survived = test$Survived)
 
 #stored data in submit in CSV format and excluded row numbers
 write.csv(submit, file = "AllMenMustDie.csv", row.names = FALSE)
+
+#add new column to training data
+train$Child <- 0
+
+#if age <18, set child column to 1
+train$Child[train$Age < 18] <- 1
+
+#gives percentage of people belonging to each subset who survived 
+aggregate(Survived ~ Child + Sex,data=train,FUN=function(x){100*sum(x)/length(x)})
+
+#next, we create a new column to categorize people according the fare amount 
+train$Fare2<-'30+'
+train$Fare2[train$Fare>=20 & train$Fare<30]<-'20-30'
+train$Fare2[train$Fare>=10 & train$Fare<20]<-'10-20'
+train$Fare2[train$Fare<10]<-'<10'
+
+#check for new subsets
+aggregate(Survived ~ Fare2 + Pclass + Sex,data=train,FUN=function(x){100*sum(x)/length(x)})
+
+#females belonging to class 3 and having paid 30+ also have low rate
+test$Survived <- 0
+test$Survived[test$Sex == 'female'] <- 1
+test$Survived[test$Sex == 'female' & test$Pclass == 3 & test$Fare >= 20] <- 0
+
+#create submission file
+submit<-data.frame(PassengerId=test$PassengerId,Survived=test$Survived)
+write.csv(submit,file="genderClassModel.csv",row.names=FALSE)
