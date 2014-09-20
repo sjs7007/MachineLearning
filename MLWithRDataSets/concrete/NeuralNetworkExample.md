@@ -85,4 +85,43 @@ str(concrete)
 		```
 
 		![model](neuralArch.png)
+
 + Step 4 : Evaluating Model Performance.
+
+	+ Compute performance by giving it to model after removing the labels.
+	+ The compute() function results a list with two components : neurons and results. Extract the latter.
+	+ cor() function is then used to obtain a correlation between the two variables.
+
+	```
+	model_results <- compute(concrete_model, concrete_test[1:8])
+	predicted_strength <- model_results$net.result
+	cor(predicted_strength, concrete_test$strength)
+	```
+
+	Output : 0.7180
+
++ Step 5 : Improving Model Performance.
+
+	+ Change number of neurons in hidden layer to 5 and build model.
+	+ Plot the model.
+	+ Save it.
+
+	```
+	concrete_model2 <- neuralnet(strength ~ cement + slag + ash + water + superplastic + coarseagg + fineagg + age, data = concrete_train, hidden = 5)
+	plot(concrete_model2)
+	savePlot("neuralArch2.png")
+	```
+
+	![model](neuralArch2.png)
+
+	+ Evaluate performance again. 
+
+	```
+	model_results2 <- compute(concrete_model2, concrete_test[1:8])
+	predicted_strength2 <- model_results2$net.result
+	cor(predicted_strength2, concrete_test$strength)
+	```
+
+	Output : 0.7835
+
++[Link to showterm recording.](http://showterm.io/c97143f2bd50241b93a6b)
